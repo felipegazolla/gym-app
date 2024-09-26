@@ -20,6 +20,11 @@ export function Home() {
     'Glúteos',
     'Panturrilhas',
   ])
+  const [exercises, setExercises] = useState([
+    'Supino Reto',
+    'Crucifixo',
+    'Supino Inclinado',
+  ])
   const [groupSelected, setGroupSelected] = useState('peito')
 
   return (
@@ -37,23 +42,29 @@ export function Home() {
           />
         )}
         horizontal
-        showsHorizontalScrollIndicator={false} 
-        contentContainerStyle={{paddingHorizontal: 16}}
-        style={{marginVertical: 25, maxHeight: 44, minHeight: 44}}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+        style={{ marginVertical: 25, maxHeight: 44, minHeight: 44 }}
       />
 
-      <VStack px={'$8'}>
-        <HStack justifyContent='space-between' mb={'$5'} alignItems='center'>
-          <Heading color='$gray200' fontSize={'$md'} fontFamily='$heading'>
+      <VStack px={'$8'} flex={1}>
+        <HStack justifyContent="space-between" mb={'$5'} alignItems="center">
+          <Heading color="$gray200" fontSize={'$md'} fontFamily="$heading">
             Exercícios
           </Heading>
-          <Text color='$gray200' fontSize={'$sm'} fontFamily='$body'>
-            4
+          <Text color="$gray200" fontSize={'$sm'} fontFamily="$body">
+            {exercises.length}
           </Text>
         </HStack>
 
-        <ExerciseCard />
+        <FlatList
+          data={exercises}
+          keyExtractor={item => item}
+          renderItem={() => <ExerciseCard />}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: 20}}
 
+        />
       </VStack>
     </VStack>
   )
