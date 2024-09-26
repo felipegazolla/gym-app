@@ -1,6 +1,6 @@
 import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
-import { HStack, VStack } from '@gluestack-ui/themed'
+import { Heading, HStack, Text, VStack } from '@gluestack-ui/themed'
 import { useState } from 'react'
 import { FlatList } from 'react-native'
 
@@ -40,6 +40,17 @@ export function Home() {
         contentContainerStyle={{paddingHorizontal: 16}}
         style={{marginVertical: 25, maxHeight: 44, minHeight: 44}}
       />
+
+      <VStack px={'$8'}>
+        <HStack justifyContent='space-between' mb={'$5'} alignItems='center'>
+          <Heading color='$gray200' fontSize={'$md'} fontFamily='$heading'>
+            Exercícios
+          </Heading>
+          <Text color='$gray200' fontSize={'$sm'} fontFamily='$body'>
+            4
+          </Text>
+        </HStack>
+      </VStack>
     </VStack>
   )
 }
