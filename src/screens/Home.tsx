@@ -1,3 +1,4 @@
+import { ExerciseCard } from '@components/ExerciseCard'
 import { Group } from '@components/Group'
 import { HomeHeader } from '@components/HomeHeader'
 import { Heading, HStack, Text, VStack } from '@gluestack-ui/themed'
@@ -50,6 +51,9 @@ export function Home() {
             4
           </Text>
         </HStack>
+
+        <ExerciseCard />
+
       </VStack>
     </VStack>
   )
