@@ -1,4 +1,5 @@
 import {
+  Box,
   Heading,
   HStack,
   Icon,
@@ -9,8 +10,12 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import type { AppNavigatorRoutesProps } from '@routes/app.routes'
 import { ArrowLeft } from 'lucide-react-native'
-import { TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
+
 import BodySvg from '@assets/body.svg'
+import SeriesSvg from '@assets/series.svg'
+import RepsSvg from '@assets/repetitions.svg'
+import { Button } from '@components/Button'
 
 export function Exercise() {
   const navigation = useNavigation<AppNavigatorRoutesProps>()
@@ -48,19 +53,48 @@ export function Exercise() {
         </HStack>
       </VStack>
 
-      <VStack p={'$8'}>
-        <Image
-          source={{
-            uri: 'https://i.pinimg.com/736x/39/d9/fb/39d9fb1ab399ad672ab879b3ef898dea.jpg',
-          }}
-          alt='Imagem do exercício'
-          mb={'$3'}
-          resizeMode='cover'
-          rounded={'$lg'}
-          w={'$full'}
-          h={'$80'}
-        />
-      </VStack>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 32 }}
+      >
+        <VStack p={'$8'}>
+          <Image
+            source={{
+              uri: 'https://i.pinimg.com/736x/39/d9/fb/39d9fb1ab399ad672ab879b3ef898dea.jpg',
+            }}
+            alt="Imagem do exercício"
+            mb={'$3'}
+            resizeMode="cover"
+            rounded={'$lg'}
+            w={'$full'}
+            h={'$80'}
+          />
+
+          <Box bg="$gray600" rounded={'$md'} pb={'$4'} px={'$4'}>
+            <HStack
+              alignItems="center"
+              justifyContent="space-around"
+              mb={'$6'}
+              mt={'$5'}
+            >
+              <HStack>
+                <SeriesSvg />
+                <Text color="$gray200" ml={'$2'}>
+                  3 séries
+                </Text>
+              </HStack>
+              <HStack>
+                <RepsSvg />
+                <Text color="$gray200" ml={'$2'}>
+                  12 repetições
+                </Text>
+              </HStack>
+            </HStack>
+
+            <Button title="Marcar como realizado" />
+          </Box>
+        </VStack>
+      </ScrollView>
     </VStack>
   )
 }
