@@ -25,7 +25,7 @@ export function Home() {
     'Crucifixo',
     'Supino Inclinado',
   ])
-  const [groupSelected, setGroupSelected] = useState('peito')
+  const [groupSelected, setGroupSelected] = useState('peitoral')
 
   return (
     <VStack flex={1}>
@@ -37,7 +37,7 @@ export function Home() {
         renderItem={({ item }) => (
           <Group
             name={item}
-            isActive={groupSelected === item}
+            isActive={groupSelected.toLowerCase() === item.toLowerCase()}
             onPress={() => setGroupSelected(item)}
           />
         )}
