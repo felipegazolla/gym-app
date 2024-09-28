@@ -25,8 +25,9 @@ export function Input({
     <FormControl isInvalid={invalid} mb={'$4'} w={'$full'}>
       <GluestackInput
         h={'$14'}
-        borderWidth={'$0'}
+        borderWidth={'$1'}
         borderRadius={'$md'}
+        borderColor='$gray500'
         $focus={{
           borderWidth: 1,
           borderColor: invalid ? '$red500' : '$green500',
