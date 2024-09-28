@@ -31,7 +31,7 @@ export function ToastMessage({
       mt={'$10'}
     >
       <VStack space="xs" w={'$full'}>
-        <Pressable alignSelf='flex-end' onPress={onClose}>
+        <Pressable alignSelf="flex-end" onPress={onClose}>
           <Icon as={X} color="$coolGray50" size="md" />
         </Pressable>
 

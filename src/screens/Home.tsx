@@ -68,10 +68,11 @@ export function Home() {
         <FlatList
           data={exercises}
           keyExtractor={item => item}
-          renderItem={() => <ExerciseCard onPress={handleOpenExerciseDetails}/>}
+          renderItem={() => (
+            <ExerciseCard onPress={handleOpenExerciseDetails} />
+          )}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{paddingBottom: 20}}
-
+          contentContainerStyle={{ paddingBottom: 20 }}
         />
       </VStack>
     </VStack>
