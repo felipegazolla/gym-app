@@ -3,8 +3,12 @@ import { gluestackUIConfig } from '../../config/gluestack-ui.config'
 import { Box } from '@gluestack-ui/themed'
 import { AuthRoutes } from './auth.routes'
 import { AppRoutes } from './app.routes'
+import { useContext } from 'react'
+import { AuthContext } from '@contexts/AuthContext'
 
 export function Routes() {
+  const contextData = useContext(AuthContext)
+
   const theme = DefaultTheme
   theme.colors.background = gluestackUIConfig.tokens.colors.gray700
 
