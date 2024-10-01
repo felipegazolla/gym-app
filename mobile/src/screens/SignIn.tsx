@@ -4,6 +4,7 @@ import {
   Image,
   ScrollView,
   Text,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed'
 import BgImg from '@assets/background.png'
@@ -14,6 +15,9 @@ import { useNavigation } from '@react-navigation/native'
 import type { AuthNavigatorRouteProps } from '@routes/auth.routes'
 import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from '@hooks/useAuth'
+import { AppError } from '@utils/AppError'
+import { ToastMessage } from '@components/ToastMessage'
+import { useState } from 'react'
 
 type FormData = {
   email: string
@@ -21,9 +25,10 @@ type FormData = {
 }
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false)
   const { signIn } = useAuth()
-
   const navigation = useNavigation<AuthNavigatorRouteProps>()
+  const toast = useToast()
 
   const {
     control,
@@ -35,8 +40,29 @@ export function SignIn() {
     navigation.navigate('signUp')
   }
 
-  function handleSignIn({ email, password }: FormData) {
-    signIn(email, password)
+  async function handleSignIn({ email, password }: FormData) {
+    try {
+      setIsLoading(true)
+      await signIn(email, password)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+
+      const title = isAppError ? error.message : 'Não foi possivel entrar'
+
+      setIsLoading(false)
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title={title}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
   }
 
   return (
@@ -94,7 +120,11 @@ export function SignIn() {
               )}
             />
 
-            <Button title="Acessar" onPress={handleSubmit(handleSignIn)} />
+            <Button
+              title="Acessar"
+              onPress={handleSubmit(handleSignIn)}
+              isLoading={isLoading}
+            />
           </Center>
 
           <Center flex={1} justifyContent="flex-end" mt={'$4'}>
