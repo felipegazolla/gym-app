@@ -22,6 +22,7 @@ import { AppError } from '@utils/AppError'
 import { ToastMessage } from '@components/ToastMessage'
 import { api } from '@services/api'
 import type { ExerciseDTO } from '@dtos/ExerciseDTO'
+import { Loading } from '@components/Loading'
 
 type RouteParamsProps = {
   exerciseId: string
@@ -42,6 +43,8 @@ export function Exercise() {
 
   async function fetchExerciseDetails() {
     try {
+      setIsLoading(true)
+
       const response = await api.get(`/exercises/${exerciseId}`)
       setExercise(response.data)
     } catch (error) {
@@ -61,6 +64,8 @@ export function Exercise() {
           />
         ),
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -98,48 +103,52 @@ export function Exercise() {
         </HStack>
       </VStack>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
-      >
-        <VStack p={'$8'}>
-          <Image
-            source={{
-              uri: `${api.defaults.baseURL}/exercise/demo/${exercise.demo}`,
-            }}
-            alt="Imagem do exercício"
-            mb={'$3'}
-            resizeMode="cover"
-            rounded={'$lg'}
-            w={'$full'}
-            h={'$80'}
-          />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 32 }}
+        >
+          <VStack p={'$8'}>
+            <Image
+              source={{
+                uri: `${api.defaults.baseURL}/exercise/demo/${exercise.demo}`,
+              }}
+              alt="Imagem do exercício"
+              mb={'$3'}
+              resizeMode="cover"
+              rounded={'$lg'}
+              w={'$full'}
+              h={'$80'}
+            />
 
-          <Box bg="$gray600" rounded={'$md'} pb={'$4'} px={'$4'}>
-            <HStack
-              alignItems="center"
-              justifyContent="space-around"
-              mb={'$6'}
-              mt={'$5'}
-            >
-              <HStack alignItems="center">
-                <SeriesSvg />
-                <Text color="$gray200" ml={'$2'}>
-                  {exercise.series} séries
-                </Text>
+            <Box bg="$gray600" rounded={'$md'} pb={'$4'} px={'$4'}>
+              <HStack
+                alignItems="center"
+                justifyContent="space-around"
+                mb={'$6'}
+                mt={'$5'}
+              >
+                <HStack alignItems="center">
+                  <SeriesSvg />
+                  <Text color="$gray200" ml={'$2'}>
+                    {exercise.series} séries
+                  </Text>
+                </HStack>
+                <HStack alignItems="center">
+                  <RepsSvg />
+                  <Text color="$gray200" ml={'$2'}>
+                    {exercise.repetitions} repetições
+                  </Text>
+                </HStack>
               </HStack>
-              <HStack alignItems="center">
-                <RepsSvg />
-                <Text color="$gray200" ml={'$2'}>
-                  {exercise.repetitions} repetições
-                </Text>
-              </HStack>
-            </HStack>
 
-            <Button title="Marcar como realizado" />
-          </Box>
-        </VStack>
-      </ScrollView>
+              <Button title="Marcar como realizado" />
+            </Box>
+          </VStack>
+        </ScrollView>
+      )}
     </VStack>
   )
 }
