@@ -5,6 +5,7 @@ import {
   Icon,
   Image,
   Text,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -16,20 +17,57 @@ import BodySvg from '@assets/body.svg'
 import SeriesSvg from '@assets/series.svg'
 import RepsSvg from '@assets/repetitions.svg'
 import { Button } from '@components/Button'
+import { useEffect, useState } from 'react'
+import { AppError } from '@utils/AppError'
+import { ToastMessage } from '@components/ToastMessage'
+import { api } from '@services/api'
+import type { ExerciseDTO } from '@dtos/ExerciseDTO'
 
 type RouteParamsProps = {
   exerciseId: string
 }
 
 export function Exercise() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO)
   const navigation = useNavigation<AppNavigatorRoutesProps>()
   const route = useRoute()
+  const toast = useToast()
 
   const { exerciseId } = route.params as RouteParamsProps
 
   function handleGoBack() {
     navigation.goBack()
   }
+
+  async function fetchExerciseDetails() {
+    try {
+      const response = await api.get(`/exercises/${exerciseId}`)
+      setExercise(response.data)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError
+        ? error.message
+        : 'Não foi possivel carregar o exercicios'
+
+      toast.show({
+        placement: 'top',
+        render: ({ id }) => (
+          <ToastMessage
+            id={id}
+            action="error"
+            title={title}
+            onClose={() => toast.close(id)}
+          />
+        ),
+      })
+    }
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    fetchExerciseDetails()
+  }, [exerciseId])
 
   return (
     <VStack flex={1}>
@@ -49,12 +87,12 @@ export function Exercise() {
             fontSize={'$lg'}
             flexShrink={1}
           >
-            Supino com Halteres
+            {exercise.name}
           </Heading>
           <HStack alignItems="center">
             <BodySvg />
             <Text color="$gray200" ml={'$1'} textTransform="capitalize">
-              Peito
+              {exercise.group}
             </Text>
           </HStack>
         </HStack>
@@ -67,7 +105,7 @@ export function Exercise() {
         <VStack p={'$8'}>
           <Image
             source={{
-              uri: 'https://i.pinimg.com/736x/39/d9/fb/39d9fb1ab399ad672ab879b3ef898dea.jpg',
+              uri: `${api.defaults.baseURL}/exercise/demo/${exercise.demo}`,
             }}
             alt="Imagem do exercício"
             mb={'$3'}
@@ -84,16 +122,16 @@ export function Exercise() {
               mb={'$6'}
               mt={'$5'}
             >
-              <HStack>
+              <HStack alignItems="center">
                 <SeriesSvg />
                 <Text color="$gray200" ml={'$2'}>
-                  3 séries
+                  {exercise.series} séries
                 </Text>
               </HStack>
-              <HStack>
+              <HStack alignItems="center">
                 <RepsSvg />
                 <Text color="$gray200" ml={'$2'}>
-                  12 repetições
+                  {exercise.repetitions} repetições
                 </Text>
               </HStack>
             </HStack>
