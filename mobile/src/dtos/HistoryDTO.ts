@@ -2,6 +2,6 @@ export type HistoryDTO = {
   id: string
   name: string
   group: string
-  hours: string
+  hour: string
   created_at: string
 }
