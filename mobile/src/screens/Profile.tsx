@@ -21,6 +21,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useAuth } from '@hooks/useAuth'
 import { api } from '@services/api'
 import { AppError } from '@utils/AppError'
+import UserPhotoDefault from '@assets/userPhotoDefault.png'
 
 type FormDataProps = {
   name: string
@@ -58,9 +59,6 @@ const profileSchema = yup.object({
 
 export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto, setUserPhoto] = useState(
-    'https://github.com/felipegazolla.png'
-  )
 
   const toast = useToast()
   const { user, updateUserProfile } = useAuth()
@@ -111,7 +109,43 @@ export function Profile() {
           })
         }
 
-        setUserPhoto(photoURI)
+        const fileExtension = photoURI.split('.').pop()
+
+        const photoFile = {
+          name: `${user.name}.${fileExtension}`.toLowerCase(),
+          uri: photoURI,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        } as any
+
+        const userPhotoUploadForm = new FormData()
+        userPhotoUploadForm.append('avatar', photoFile)
+
+        const avatarUpdatedRespose = await api.patch(
+          '/users/avatar',
+          userPhotoUploadForm,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+
+        const userUpdated = user
+        userUpdated.avatar = avatarUpdatedRespose.data.avatar
+        updateUserProfile(userUpdated)
+
+        toast.show({
+          placement: 'top',
+          render: ({ id }) => (
+            <ToastMessage
+              id={id}
+              action="success"
+              title="Foto atualizada"
+              onClose={() => toast.close(id)}
+            />
+          ),
+        })
       }
     } catch (error) {
       console.log(error)
@@ -169,7 +203,11 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt={'$6'} px={'$10'}>
           <UserPhoto
-            source={{ uri: userPhoto }}
+            source={
+              user.avatar
+                ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                : UserPhotoDefault
+            }
             alt="Foto do usuário"
             size="xl"
           />
